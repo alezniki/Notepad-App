@@ -10,8 +10,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.alezniki.notepad.R;
+import com.alezniki.notepad.model.DatabaseHelper;
+import com.j256.ormlite.android.apptools.OpenHelperManager;
 
 public class MainActivity extends AppCompatActivity {
+
+    private DatabaseHelper helper = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,9 +43,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
+        // Handle action bar item clicks here.
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
@@ -50,5 +52,25 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+
+    public DatabaseHelper getDatabaseHelper() {
+        if (helper == null) {
+            helper = OpenHelperManager.getHelper(this,DatabaseHelper.class);
+        }
+
+        return helper;
+    }
+
+    // Release Database Helper when done
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        if (helper != null) {
+            OpenHelperManager.releaseHelper();
+            helper = null;
+        }
     }
 }
