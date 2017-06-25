@@ -9,20 +9,32 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.alezniki.notepad.R;
+import com.alezniki.notepad.adapter.NotesAdapter;
 import com.alezniki.notepad.model.DatabaseHelper;
+import com.alezniki.notepad.model.Notes;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
+
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
     private DatabaseHelper helper = null;
     public final int REQUEST_DATA_FROM_NOTES_ACTIVITY = 1;
 
-
     private TextView tvTitle;
     private TextView tvText;
+
+    private NotesAdapter adapter;
+    private ListView listView;
+    private List<Notes> list;
+
+    private Notes note;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +46,21 @@ public class MainActivity extends AppCompatActivity {
         tvTitle = (TextView) findViewById(R.id.tv_note_title);
         tvText = (TextView) findViewById(R.id.tv_note_text);
 
+        // Construct the data source
+        list = new ArrayList<>();
+        // Create the adapter to convert the array to views
+        adapter = new NotesAdapter(this,list);
+        // Attach the adapter to a ListView
+        listView = (ListView) findViewById(R.id.lv_main_list_item);
+        listView.setAdapter(adapter);
+
+        try {
+            list = getDatabaseHelper().getNotesDao().queryForAll();
+            adapter.addAll(list);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -41,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(MainActivity.this,NotesActivity.class));
             }
         });
+
     }
 
     @Override
@@ -79,13 +107,47 @@ public class MainActivity extends AppCompatActivity {
                 String title = data.getStringExtra("note_title");
                 String text = data.getStringExtra("note_text");
 
+                note = new Notes();
+                note.setNoteTitle(title);
+                note.setNoteText(text);
+
+                // Create new note into database
+                try {
+                    getDatabaseHelper().getNotesDao().create(note);
+                    listRefresh();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+
             }
         }
     }
 
+    private void listRefresh() {
+        if (listView != null && adapter != null) {
+           // Clear the entire list
+            adapter.clear();
+
+            try {
+                list = getDatabaseHelper().getNotesDao().queryForAll();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+            adapter.addAll(list); // Set up new elements
+            adapter.notifyDataSetChanged(); // Refresh data
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        listRefresh();
+    }
+
     public DatabaseHelper getDatabaseHelper() {
         if (helper == null) {
-            helper = OpenHelperManager.getHelper(this,DatabaseHelper.class);
+            helper = OpenHelperManager.getHelper(MainActivity.this,DatabaseHelper.class);
         }
 
         return helper;

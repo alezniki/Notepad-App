@@ -14,7 +14,6 @@ public class Notes {
     public static final String TABLE_NAME_NOTES = "notes";
 
     // Column Names
-
     public static final String FIELD_NAME_ID = "id";
     public static final String FIELD_NAME_TITLE = "title";
     public static final String FIELD_NAME_TEXT = "text";
@@ -53,4 +52,6 @@ public class Notes {
     public void setNoteText(String noteText) {
         this.noteText = noteText;
     }
+
+
 }
