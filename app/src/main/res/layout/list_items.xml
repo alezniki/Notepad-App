@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!--Notes Title TextView-->
+    <TextView
+        android:id="@+id/tv_note_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="textStart"
+        android:textStyle="italic"
+        android:textSize="18sp"
+        android:padding="10dp"/>
+
+    <!--Notes Text TextView-->
+    <TextView
+        android:id="@+id/tv_note_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="textStart"
+        android:textSize="16sp"
+        android:padding="10dp"/>
+
+</LinearLayout>

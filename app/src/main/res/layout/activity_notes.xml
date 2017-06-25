@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.alezniki.notepad.activities.NotesActivity">
+
+    <include layout="@layout/toolbar"/>
+
+    <!--Enter Note Title-->
+    <EditText
+        android:id="@+id/et_save_note_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter title"
+        android:textAlignment="textStart"
+        android:textStyle="italic"
+        android:textSize="18sp"
+        android:padding="10dp" />
+
+    <!--Enter Note Text-->
+    <EditText
+        android:id="@+id/et_save_note_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter note"
+        android:textAlignment="textStart"
+        android:textSize="16sp"
+        android:padding="10dp"/>
+
+</LinearLayout>
