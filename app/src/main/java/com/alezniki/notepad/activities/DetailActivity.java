@@ -1,7 +1,9 @@
 package com.alezniki.notepad.activities;
 
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -10,6 +12,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.alezniki.notepad.R;
 import com.alezniki.notepad.model.DatabaseHelper;
@@ -18,11 +21,13 @@ import com.j256.ormlite.android.apptools.OpenHelperManager;
 
 import java.sql.SQLException;
 
+import static com.alezniki.notepad.activities.MainActivity.ALLOW_MSG;
 import static com.alezniki.notepad.activities.MainActivity.KEY_ID;
 
 public class DetailActivity extends AppCompatActivity {
 
     private DatabaseHelper helper = null;
+    private SharedPreferences preferences;
 
     private EditText etTitle;
     private EditText etText;
@@ -51,6 +56,7 @@ public class DetailActivity extends AppCompatActivity {
         etTitle.setText(note.getNoteTitle());
         etText.setText(note.getNoteText());
 
+        preferences = PreferenceManager.getDefaultSharedPreferences(this);
     }
 
     @Override
@@ -66,11 +72,11 @@ public class DetailActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         switch (id) {
-            case R.id.action_update:
+            case R.id.action_update_note:
 //                Toast.makeText(this, "UPDATE", Toast.LENGTH_SHORT).show();
                 updateNotesItem();
                 break;
-            case R.id.action_delete:
+            case R.id.action_delete_note:
 //                Toast.makeText(this, "DELETE", Toast.LENGTH_SHORT).show();
                 deleteNotesItem();
                 break;
@@ -86,11 +92,11 @@ public class DetailActivity extends AppCompatActivity {
 
         try {
             getDatabaseHelper().getNotesDao().update(note);
+            showNotificationMessage("The note is successfully updated.");
+            finish();
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
-        finish();
     }
 
     private void deleteNotesItem() {
@@ -121,17 +127,24 @@ public class DetailActivity extends AppCompatActivity {
                 if (note != null) {
                     try {
                         getDatabaseHelper().getNotesDao().delete(note);
+                        showNotificationMessage("The note is successfully deleted.");
+                        finish();
                     } catch (SQLException e) {
                         e.printStackTrace();
                     }
-
-                    finish();
                 }
                 dialog.dismiss();
             }
         });
 
         alert.show();
+    }
+
+    private void showNotificationMessage(String message) {
+        boolean allowed = preferences.getBoolean(ALLOW_MSG, false);
+        if (allowed) {
+            Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+        }
     }
 
     public DatabaseHelper getDatabaseHelper() {

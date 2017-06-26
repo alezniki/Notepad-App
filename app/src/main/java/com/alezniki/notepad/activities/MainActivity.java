@@ -2,8 +2,11 @@ package com.alezniki.notepad.activities;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -26,8 +29,11 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     private DatabaseHelper helper = null;
+    private SharedPreferences preferences;
+
     public static final int REQUEST_DATA_FROM_NOTES_ACTIVITY = 1;
     public static final String KEY_ID = "key_id";
+    public static final String ALLOW_MSG = "allow_msg";
 
     private TextView tvTitle;
     private TextView tvText;
@@ -87,6 +93,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        preferences = PreferenceManager.getDefaultSharedPreferences(this);
     }
 
     @Override
@@ -103,6 +110,7 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            startActivity(new Intent(MainActivity.this, SettingsActivity.class));
             return true;
         }
 
@@ -127,13 +135,19 @@ public class MainActivity extends AppCompatActivity {
                 // Create new note into database
                 try {
                     getDatabaseHelper().getNotesDao().create(note);
-                    listRefresh();
+                    showNotificationMessage("New note is created successfully.");
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
 
             }
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        listRefresh();
     }
 
     private void listRefresh() {
@@ -152,10 +166,11 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        listRefresh();
+    private void showNotificationMessage(String message) {
+        boolean allowed = preferences.getBoolean(ALLOW_MSG, false);
+        if (allowed) {
+            Snackbar.make(findViewById(R.id.lv_main_list_item), message, Snackbar.LENGTH_LONG).show();
+        }
     }
 
     public DatabaseHelper getDatabaseHelper() {
