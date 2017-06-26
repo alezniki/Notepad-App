@@ -15,4 +15,6 @@
     <string name="alert_message">This note will be deleted!</string>
     <string name="delete_notification">The note is successfully deleted.</string>
     <string name="create_notification">New note is created successfully.</string>
+    <string name="search">Search</string>
+    <string name="search_hint">Search notes</string>
 </resources>
