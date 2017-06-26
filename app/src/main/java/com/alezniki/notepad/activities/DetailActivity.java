@@ -1,10 +1,14 @@
 package com.alezniki.notepad.activities;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.EditText;
 
 import com.alezniki.notepad.R;
@@ -90,15 +94,44 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     private void deleteNotesItem() {
-        if (note != null) {
-            try {
-                getDatabaseHelper().getNotesDao().delete(note);
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+        LayoutInflater inflater = getLayoutInflater();
+        View alertLayout = inflater.inflate(android.R.layout.select_dialog_item, null);
 
-            finish();
-        }
+
+        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+        alert.setMessage("This note will be deleted!");
+
+        // Set the view from XML inside AlertDialog
+        alert.setView(alertLayout);
+        // Disallow cancel of AlertDialog on click of back button and outside touch
+        alert.setCancelable(false);
+
+        alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        alert.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (note != null) {
+                    try {
+                        getDatabaseHelper().getNotesDao().delete(note);
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+
+                    finish();
+                }
+                dialog.dismiss();
+            }
+        });
+
+        alert.show();
     }
 
     public DatabaseHelper getDatabaseHelper() {
