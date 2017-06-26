@@ -54,9 +54,7 @@ public class NotesActivity extends AppCompatActivity {
         String text = etText.getText().toString();
 
         if (title.trim().isEmpty() && text.trim().isEmpty()) {
-            // If text fields are empty return to main activity
-            Intent intent = new Intent();
-            setResult(Activity.RESULT_CANCELED, intent);
+            // // If there is no input from the user return to main activity
 
             finish();
         } else {

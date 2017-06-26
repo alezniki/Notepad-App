@@ -114,13 +114,8 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == REQUEST_DATA_FROM_NOTES_ACTIVITY) {
-
-            if (resultCode == Activity.RESULT_CANCELED){
-                // If there is no input result from the user
-                tvTitle.getText();
-                tvText.getText();
-
-            } else if (resultCode == Activity.RESULT_OK){
+            
+           if (resultCode == Activity.RESULT_OK) {
                 // If user adds new note
                 String title = data.getStringExtra("note_title");
                 String text = data.getStringExtra("note_text");
