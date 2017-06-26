@@ -9,6 +9,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -25,7 +26,8 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     private DatabaseHelper helper = null;
-    public final int REQUEST_DATA_FROM_NOTES_ACTIVITY = 1;
+    public static final int REQUEST_DATA_FROM_NOTES_ACTIVITY = 1;
+    public static final String KEY_ID = "key_id";
 
     private TextView tvTitle;
     private TextView tvText;
@@ -69,7 +71,22 @@ public class MainActivity extends AppCompatActivity {
                 startActivityForResult(intent,REQUEST_DATA_FROM_NOTES_ACTIVITY);
             }
         });
-        
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                // This holds the value of the Notes position , which user has selected for further action
+                if (position > -1) {
+                    Notes pos = (Notes) listView.getItemAtPosition(position);
+
+                    Intent intent = new Intent(MainActivity.this, DetailActivity.class);
+                    intent.putExtra(KEY_ID, pos.getNoteID());
+
+                    startActivity(intent);
+                }
+            }
+        });
+
     }
 
     @Override

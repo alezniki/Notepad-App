@@ -1,19 +1,29 @@
 package com.alezniki.notepad.activities;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
+import android.widget.EditText;
 
 import com.alezniki.notepad.R;
 import com.alezniki.notepad.model.DatabaseHelper;
+import com.alezniki.notepad.model.Notes;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
+
+import java.sql.SQLException;
+
+import static com.alezniki.notepad.activities.MainActivity.KEY_ID;
 
 public class DetailActivity extends AppCompatActivity {
 
     private DatabaseHelper helper = null;
+
+    private EditText etTitle;
+    private EditText etText;
+
+    private Notes note;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,6 +31,21 @@ public class DetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_detail);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         if (toolbar != null) setSupportActionBar(toolbar);
+
+        // Receive the object that which has been sent through Intent from MainActivity
+        int keyID = getIntent().getExtras().getInt(KEY_ID);
+
+        try {
+            note = getDatabaseHelper().getNotesDao().queryForId(keyID);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        etTitle = (EditText) findViewById(R.id.et_detail_note_title);
+        etText = (EditText) findViewById(R.id.et_detail_note_text);
+
+        etTitle.setText(note.getNoteTitle());
+        etText.setText(note.getNoteText());
 
     }
 
@@ -38,10 +63,12 @@ public class DetailActivity extends AppCompatActivity {
 
         switch (id) {
             case R.id.action_update:
-                Toast.makeText(this, "UPDATE", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(this, "UPDATE", Toast.LENGTH_SHORT).show();
+                updateNotesItem();
                 break;
             case R.id.action_delete:
-                Toast.makeText(this, "DELETE", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(this, "DELETE", Toast.LENGTH_SHORT).show();
+                deleteNotesItem();
                 break;
         }
 
@@ -49,9 +76,34 @@ public class DetailActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    private void updateNotesItem() {
+        note.setNoteTitle(etTitle.getText().toString());
+        note.setNoteText(etText.getText().toString());
+
+        try {
+            getDatabaseHelper().getNotesDao().update(note);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        finish();
+    }
+
+    private void deleteNotesItem() {
+        if (note != null) {
+            try {
+                getDatabaseHelper().getNotesDao().delete(note);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+            finish();
+        }
+    }
+
     public DatabaseHelper getDatabaseHelper() {
         if (helper == null) {
-            helper = OpenHelperManager.getHelper(MainActivity.this,DatabaseHelper.class);
+            helper = OpenHelperManager.getHelper(DetailActivity.this,DatabaseHelper.class);
         }
 
         return helper;

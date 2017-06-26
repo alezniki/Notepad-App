@@ -21,7 +21,7 @@
 
     <!--Detail Note Text-->
     <EditText
-        android:id="@+id/et_save_note_text"
+        android:id="@+id/et_detail_note_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Edit note"
