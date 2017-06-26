@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Beleške</string>
+    <string name="action_settings">Podešavanja</string>
+    <string name="action_save_note">Sačuvaj</string>
+    <string name="action_update">Izmeni</string>
+    <string name="update_delete">Obriši</string>
+    <string name="edit_title_detail">Izmeni naslov beleške</string>
+    <string name="edit_note_detail">Izmeni belešku</string>
+    <string name="enter_title_notes">Upiši naslov beleške</string>
+    <string name="enter_note_notes">Upiši belešku</string>
+    <string name="preferences_main_title">Prioriteti</string>
+    <string name="preferences_checkbox_message_title">Obaveštenja</string>
+    <string name="preferences_checkbox_message_summary">Dozvoli poruke sa obaveštenjima</string>
+    <string name="update_notification">Beleška je uspešno izmenjena.</string>
+    <string name="alert_message">Beleška će biti obrisana!</string>
+    <string name="delete_notification">Beleška je uspešno obrisana.</string>
+    <string name="create_notification">Beleška je uspešno sačuvana.</string>
+</resources>

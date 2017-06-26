@@ -92,7 +92,7 @@ public class DetailActivity extends AppCompatActivity {
 
         try {
             getDatabaseHelper().getNotesDao().update(note);
-            showNotificationMessage("The note is successfully updated.");
+            showNotificationMessage(getString(R.string.update_notification));
             finish();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -105,7 +105,7 @@ public class DetailActivity extends AppCompatActivity {
 
 
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
-        alert.setMessage("This note will be deleted!");
+        alert.setMessage(R.string.alert_message);
 
         // Set the view from XML inside AlertDialog
         alert.setView(alertLayout);
@@ -127,7 +127,7 @@ public class DetailActivity extends AppCompatActivity {
                 if (note != null) {
                     try {
                         getDatabaseHelper().getNotesDao().delete(note);
-                        showNotificationMessage("The note is successfully deleted.");
+                        showNotificationMessage(getString(R.string.delete_notification));
                         finish();
                     } catch (SQLException e) {
                         e.printStackTrace();

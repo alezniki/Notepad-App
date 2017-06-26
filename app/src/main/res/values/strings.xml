@@ -4,4 +4,15 @@
     <string name="action_save_note">Save</string>
     <string name="action_update">Update</string>
     <string name="update_delete">Delete</string>
+    <string name="edit_title_detail">Edit title</string>
+    <string name="edit_note_detail">Edit note</string>
+    <string name="enter_title_notes">Enter title</string>
+    <string name="enter_note_notes">Enter note</string>
+    <string name="preferences_main_title">User Preferences</string>
+    <string name="preferences_checkbox_message_title">Notifications</string>
+    <string name="preferences_checkbox_message_summary">Allow brief notification messages</string>
+    <string name="update_notification">The note is successfully updated.</string>
+    <string name="alert_message">This note will be deleted!</string>
+    <string name="delete_notification">The note is successfully deleted.</string>
+    <string name="create_notification">New note is created successfully.</string>
 </resources>

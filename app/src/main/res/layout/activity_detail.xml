@@ -13,20 +13,20 @@
         android:id="@+id/et_detail_note_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Edit title"
+        android:hint="@string/edit_title_detail"
         android:textAlignment="textStart"
         android:textStyle="italic"
-        android:textSize="18sp"
-        android:padding="10dp" />
+        android:textSize="@dimen/text_size_note_title"
+        android:padding="@dimen/padding_text" />
 
     <!--Detail Note Text-->
     <EditText
         android:id="@+id/et_detail_note_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Edit note"
+        android:hint="@string/edit_note_detail"
         android:textAlignment="textStart"
-        android:textSize="16sp"
-        android:padding="10dp"/>
+        android:textSize="@dimen/text_size_note_text"
+        android:padding="@dimen/padding_text"/>
 
 </LinearLayout>

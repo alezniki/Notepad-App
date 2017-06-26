@@ -135,7 +135,7 @@ public class MainActivity extends AppCompatActivity {
                 // Create new note into database
                 try {
                     getDatabaseHelper().getNotesDao().create(note);
-                    showNotificationMessage("New note is created successfully.");
+                    showNotificationMessage(getString(R.string.create_notification));
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
