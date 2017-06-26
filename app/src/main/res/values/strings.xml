@@ -2,4 +2,6 @@
     <string name="app_name">Notepad</string>
     <string name="action_settings">Settings</string>
     <string name="action_save_note">Save</string>
+    <string name="action_update">Update</string>
+    <string name="update_delete">Delete</string>
 </resources>

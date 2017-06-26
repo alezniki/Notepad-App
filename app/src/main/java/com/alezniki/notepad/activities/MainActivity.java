@@ -65,10 +65,11 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(MainActivity.this,NotesActivity.class));
+                Intent intent = new Intent(MainActivity.this, NotesActivity.class);
+                startActivityForResult(intent,REQUEST_DATA_FROM_NOTES_ACTIVITY);
             }
         });
-
+        
     }
 
     @Override
