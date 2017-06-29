@@ -57,6 +57,8 @@ public class DetailActivity extends AppCompatActivity {
         etText.setText(note.getNoteText());
 
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+        Toast.makeText(this, "Detail.onCreate", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -164,5 +166,11 @@ public class DetailActivity extends AppCompatActivity {
             OpenHelperManager.releaseHelper();
             helper = null;
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Toast.makeText(this, "Detail.onCreate", Toast.LENGTH_SHORT).show();
     }
 }

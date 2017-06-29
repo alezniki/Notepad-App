@@ -17,7 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.TextView;
+import android.widget.Toast;
 
 import com.alezniki.notepad.R;
 import com.alezniki.notepad.adapter.NotesAdapter;
@@ -29,7 +29,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
+public class MainActivity extends AppCompatActivity {
 
     private DatabaseHelper helper = null;
     private SharedPreferences preferences;
@@ -37,9 +37,6 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     public static final int REQUEST_DATA_FROM_NOTES_ACTIVITY = 1;
     public static final String KEY_ID = "key_id";
     public static final String ALLOW_MSG = "allow_msg";
-
-    private TextView tvTitle;
-    private TextView tvText;
 
     private NotesAdapter adapter;
     private ListView listView;
@@ -53,9 +50,6 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         if (toolbar != null) setSupportActionBar(toolbar);
-
-        tvTitle = (TextView) findViewById(R.id.tv_note_title);
-        tvText = (TextView) findViewById(R.id.tv_note_text);
 
         // Construct the data source
         list = new ArrayList<>();
@@ -100,6 +94,8 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
         // Handle the ACTION_SEARCH intent by checking for it in your onCreate() method.
         handleIntent(getIntent());
+
+        Toast.makeText(this, "Main.onCreate", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -115,23 +111,23 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         searchView.setIconifiedByDefault(false); // Do not iconify the widget; expand it by default
 
         searchView.setSubmitButtonEnabled(false);
-        searchView.setOnQueryTextListener(this);
+//        searchView.setOnQueryTextListener(this);
 
-//        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-//            @Override
-//            public boolean onQueryTextSubmit(String query) {
-//                // Perform the final search, Triggered when the search is pressed
-//                return false;
-//            }
-//
-//            @Override
-//            public boolean onQueryTextChange(String newText) {
-//                // Text has changed, apply filtering? Called when the user types each character in the text field
-//                adapter.getFilter().filter(newText);
-//                return true;
-//            }
-//        });
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                // Perform the final search, Triggered when the search is pressed
+                return false;
+            }
 
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                // Text has changed, apply filtering? Called when the user types each character in the text field
+
+                adapter.getFilter().filter(newText);
+                return true;
+            }
+        });
 
         return true;
     }
@@ -155,7 +151,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == REQUEST_DATA_FROM_NOTES_ACTIVITY) {
-            
+
            if (resultCode == Activity.RESULT_OK) {
                 // If user adds new note
                 String title = data.getStringExtra("note_title");
@@ -168,19 +164,24 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                 // Create new note into database
                 try {
                     getDatabaseHelper().getNotesDao().create(note);
+                    listRefresh();
                     showNotificationMessage(getString(R.string.create_notification));
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
 
             }
+
         }
     }
 
     @Override
     protected void onNewIntent(Intent intent) {
-//        setIntent(intent);
+        setIntent(intent);
         handleIntent(intent);
+
+        Toast.makeText(this, "onNewIntent", Toast.LENGTH_SHORT).show();
+//        listRefresh();
     }
 
     private void handleIntent(Intent intent) {
@@ -188,7 +189,19 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             String query = intent.getStringExtra(SearchManager.QUERY);
             //use the query to search your data somehow
 
-            finish();
+//            doMySearch(query);
+        }
+    }
+
+    private void  doMySearch(String query) {
+
+        try {
+            getDatabaseHelper().getNotesDao().queryBuilder()
+                    .where().eq(Notes.FIELD_NAME_TITLE, query)
+                    .or().eq(Notes.FIELD_NAME_TEXT,query)
+                    .query();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 
@@ -197,7 +210,9 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         super.onResume();
         listRefresh();
 
-        handleIntent(getIntent());
+//        handleIntent(getIntent());
+
+        Toast.makeText(this, "Main.onResume", Toast.LENGTH_SHORT).show();
     }
 
     private void listRefresh() {
@@ -213,6 +228,8 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
             adapter.addAll(list); // Set up new elements
             adapter.notifyDataSetChanged(); // Refresh data
+
+//            handleIntent(getIntent());
         }
     }
 
@@ -240,19 +257,5 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             OpenHelperManager.releaseHelper();
             helper = null;
         }
-    }
-
-    @Override
-    public boolean onQueryTextSubmit(String query) {
-        // Triggered when the search is pressed
-        return false;
-    }
-
-    @Override
-    public boolean onQueryTextChange(String newText) {
-        // Called when the user types each character in the text field
-        adapter.getFilter().filter(newText);
-
-        return true;
     }
 }
