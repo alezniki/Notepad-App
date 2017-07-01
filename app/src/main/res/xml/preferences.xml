@@ -8,13 +8,13 @@
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="allow_msg"
-            android:summary="@string/preferences_checkbox_message_summary"
-            android:title="@string/preferences_checkbox_message_title"/>
+            android:summary="@string/preferences_notification_summary"
+            android:title="@string/preferences_notification_title"/>
 
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="display_grid"
-            android:summary="Display Grid View"
-            android:title="Display menu data un multi-column grid"/>
+            android:summary="@string/preferences_display_title"
+            android:title="@string/preferences_display_summary"/>
     </PreferenceCategory>
 </PreferenceScreen>

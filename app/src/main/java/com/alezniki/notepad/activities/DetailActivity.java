@@ -57,8 +57,6 @@ public class DetailActivity extends AppCompatActivity {
         etText.setText(note.getNoteText());
 
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
-
-        Toast.makeText(this, "Detail.onCreate", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -114,7 +112,7 @@ public class DetailActivity extends AppCompatActivity {
         // Disallow cancel of AlertDialog on click of back button and outside touch
         alert.setCancelable(false);
 
-        alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+        alert.setNegativeButton(R.string.dialog_negative_button, new DialogInterface.OnClickListener() {
 
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -122,7 +120,7 @@ public class DetailActivity extends AppCompatActivity {
             }
         });
 
-        alert.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+        alert.setPositiveButton(R.string.dialog_positive_button, new DialogInterface.OnClickListener() {
 
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -166,11 +164,5 @@ public class DetailActivity extends AppCompatActivity {
             OpenHelperManager.releaseHelper();
             helper = null;
         }
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        Toast.makeText(this, "Detail.onCreate", Toast.LENGTH_SHORT).show();
     }
 }

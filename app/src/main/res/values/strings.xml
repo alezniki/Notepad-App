@@ -9,12 +9,16 @@
     <string name="enter_title_notes">Enter title</string>
     <string name="enter_note_notes">Enter note</string>
     <string name="preferences_main_title">User Preferences</string>
-    <string name="preferences_checkbox_message_title">Notifications</string>
-    <string name="preferences_checkbox_message_summary">Allow brief notification messages</string>
+    <string name="preferences_notification_title">Notifications</string>
+    <string name="preferences_notification_summary">Allow brief notification messages</string>
+    <string name="preferences_display_title">Display Grid View</string>
+    <string name="preferences_display_summary">Display notes in multi-column grid</string>
     <string name="update_notification">The note is successfully updated.</string>
     <string name="alert_message">This note will be deleted!</string>
     <string name="delete_notification">The note is successfully deleted.</string>
     <string name="create_notification">New note is created successfully.</string>
     <string name="search">Search</string>
     <string name="search_hint">Search notes</string>
+    <string name="dialog_positive_button">Delete</string>
+    <string name="dialog_negative_button">Cancel</string>
 </resources>

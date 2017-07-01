@@ -4,14 +4,15 @@
     android:id="@+id/card_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    card_view:cardCornerRadius="2dp"
-    android:elevation="3dp"
-    android:layout_margin="8dp">
+    card_view:cardCornerRadius="@dimen/card_radius"
+    android:elevation="@dimen/card_elevation"
+    android:layout_margin="@dimen/card_margin">
 
     <GridLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
         <!--Notes Title TextView-->
         <TextView
             android:id="@+id/tv_note_title"

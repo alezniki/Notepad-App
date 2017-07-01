@@ -18,7 +18,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import com.alezniki.notepad.R;
 import com.alezniki.notepad.adapter.NotesAdapter;
@@ -94,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
         // Handle the ACTION_SEARCH intent by checking for it in your onCreate() method.
         handleIntent(getIntent());
 
-        Toast.makeText(this, "Main.onCreate", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, "Main.onCreate", Toast.LENGTH_SHORT).show();
     }
 
 
@@ -181,7 +180,7 @@ public class MainActivity extends AppCompatActivity {
         setIntent(intent);
         handleIntent(intent);
 
-        Toast.makeText(this, "onNewIntent", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, "onNewIntent", Toast.LENGTH_SHORT).show();
 //        listRefresh();
     }
 
@@ -210,12 +209,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         listRefresh();
-        
+
         getGridView();
 
 //        handleIntent(getIntent());
 
-        Toast.makeText(this, "Main.onResume", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, "Main.onResume", Toast.LENGTH_SHORT).show();
     }
 
     private void listRefresh() {
