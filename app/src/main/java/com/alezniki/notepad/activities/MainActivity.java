@@ -10,13 +10,13 @@ import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ListView;
 import android.widget.Toast;
 
 import com.alezniki.notepad.R;
@@ -39,8 +39,9 @@ public class MainActivity extends AppCompatActivity {
     public static final String ALLOW_MSG = "allow_msg";
 
     private NotesAdapter adapter;
-    private ListView listView;
     private List<Notes> list;
+    private RecyclerView recyclerView;
+    private RecyclerView.LayoutManager layoutManager;
 
     private Notes note;
 
@@ -53,18 +54,43 @@ public class MainActivity extends AppCompatActivity {
 
         // Construct the data source
         list = new ArrayList<>();
-        // Create the adapter to convert the array to views
+        recyclerView  = (RecyclerView) findViewById(R.id.recycler);
+
+        // 1. Use this setting to improve performance if you know that changes
+        // in content do not change the layout size of the RecyclerView
+        recyclerView.setHasFixedSize(true);
+
+        // 2. Use a linear layout manager
+        layoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(layoutManager);
+
+        //3. Create the adapter to convert the array to views
         adapter = new NotesAdapter(this,list);
-        // Attach the adapter to a ListView
-        listView = (ListView) findViewById(R.id.lv_main_list_item);
-        listView.setAdapter(adapter);
+        recyclerView.setAdapter(adapter);
 
         try {
             list = getDatabaseHelper().getNotesDao().queryForAll();
-            adapter.addAll(list);
+            adapter.notifyDataSetChanged();
+//            adapter.addAll(list);
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
+
+//        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                // This holds the value of the Notes position , which user has selected for further action
+//                if (position > -1) {
+//                    Notes pos = (Notes) listView.getItemAtPosition(position);
+//
+//                    Intent intent = new Intent(MainActivity.this, DetailActivity.class);
+//                    intent.putExtra(KEY_ID, pos.getNoteID());
+//
+//                    startActivity(intent);
+//                }
+//            }
+//        });
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -74,22 +100,6 @@ public class MainActivity extends AppCompatActivity {
                 startActivityForResult(intent,REQUEST_DATA_FROM_NOTES_ACTIVITY);
             }
         });
-
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                // This holds the value of the Notes position , which user has selected for further action
-                if (position > -1) {
-                    Notes pos = (Notes) listView.getItemAtPosition(position);
-
-                    Intent intent = new Intent(MainActivity.this, DetailActivity.class);
-                    intent.putExtra(KEY_ID, pos.getNoteID());
-
-                    startActivity(intent);
-                }
-            }
-        });
-
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         // Handle the ACTION_SEARCH intent by checking for it in your onCreate() method.
@@ -124,7 +134,7 @@ public class MainActivity extends AppCompatActivity {
             public boolean onQueryTextChange(String newText) {
                 // Text has changed, apply filtering? Called when the user types each character in the text field
 
-                adapter.getFilter().filter(newText);
+//                adapter.getFilter().filter(newText);
                 return true;
             }
         });
@@ -216,9 +226,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void listRefresh() {
-        if (listView != null && adapter != null) {
+        if (recyclerView != null && adapter != null) {
            // Clear the entire list
-            adapter.clear();
+            adapter.clearFromAdapter();
 
             try {
                 list = getDatabaseHelper().getNotesDao().queryForAll();
@@ -226,7 +236,7 @@ public class MainActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
 
-            adapter.addAll(list); // Set up new elements
+            adapter.addToAdapter(list); // Set up new elements
             adapter.notifyDataSetChanged(); // Refresh data
 
 //            handleIntent(getIntent());
@@ -236,7 +246,7 @@ public class MainActivity extends AppCompatActivity {
     private void showNotificationMessage(String message) {
         boolean allowed = preferences.getBoolean(ALLOW_MSG, false);
         if (allowed) {
-            Snackbar.make(findViewById(R.id.lv_main_list_item), message, Snackbar.LENGTH_LONG).show();
+            Snackbar.make(findViewById(R.id.recycler), message, Snackbar.LENGTH_LONG).show();
         }
     }
 

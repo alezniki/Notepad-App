@@ -1,10 +1,10 @@
 package com.alezniki.notepad.adapter;
 
 import android.content.Context;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.alezniki.notepad.R;
@@ -16,46 +16,73 @@ import java.util.List;
  * Created by nikola on 6/25/17.
  */
 
-public class NotesAdapter extends ArrayAdapter<Notes> {
-    // Using ArrayAdapter to improve ListView performances with ViewHolder pattern
+public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> {
+
+    private List<Notes> list; // list of items
+    private Context context;
 
     public NotesAdapter(Context context, List<Notes> list) {
-        super(context, 0, list);
+        this.context = context;
+        this.list = list;
     }
 
-    private static class ViewHolder {
-        TextView tvTitle;
-        TextView tvText;
-    }
-
+    // Create new views (invoked by the layout manager)
     @Override
-    public View getView(int position, View view, ViewGroup parent) {
-//        return super.getView(position, convertView, parent);
-        Notes pos = getItem(position);
-        ViewHolder viewHolder;
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        LayoutInflater inflater = LayoutInflater.from(context);
+        View itemView = inflater.inflate(R.layout.list_items, parent, false);
 
-        // Check if an existing view is being reused, otherwise inflate the view
-        if (view == null) {
-            viewHolder = new ViewHolder();
-            LayoutInflater inflater = LayoutInflater.from(getContext());
-            view = inflater.inflate(R.layout.list_items,parent,false);
+        ViewHolder viewHolder = new ViewHolder(itemView);
+        return viewHolder;
+    }
 
-            // Look up for data population
-            viewHolder.tvTitle = (TextView) view.findViewById(R.id.tv_note_title);
-            viewHolder.tvText = (TextView) view.findViewById(R.id.tv_note_text);
+    // Replace the contents of a view (invoked by the layout manager)
+    // This is where you supply data that you want to display to the user
+    @Override
+    public void onBindViewHolder(ViewHolder holder, int position) {
+        // Get element from your dataset at this position
+        final Notes note = list.get(position);
 
-            // Cache the viewHolder object inside the fresh view
-            view.setTag(viewHolder);
-        } else {
-            // View is being recycled, retrieve the viewHolder object from tag
-            viewHolder = (ViewHolder) view.getTag();
+        // Replace the contents of the view with that element
+        holder.tvTitle.setText(note.getNoteTitle());
+        holder.tvText.setText(note.getNoteText());
+
+    }
+
+    // Return the size of your dataset (invoked by the layout manager)
+    @Override
+    public int getItemCount() {
+        return list.size();
+    }
+
+    public void clearFromAdapter() {
+        int size = this.list.size();
+//        this.list.clear();
+//        notifyIte
+
+        if (size > 0) {
+            for (int i = 0; i < size ; i++) {
+                this.list.remove(0);
+            }
+            this.notifyItemRangeChanged(0, size);
         }
+    }
 
-        // Populate the data from the data object via the viewHolder object into the template view.
-        viewHolder.tvTitle.setText(pos.getNoteTitle());
-        viewHolder.tvText.setText(pos.getNoteText());
+    public void addToAdapter(List<Notes> l) {
+        this.list.addAll(l);
+        this.notifyItemRangeInserted(0, l.size()-1);
 
-        // Return the completed view to render on screen
-        return view;
+    }
+
+    public class ViewHolder extends RecyclerView.ViewHolder{
+        public TextView tvTitle;
+        public TextView tvText;
+
+        public ViewHolder(View itemView) {
+            super(itemView);
+
+            tvTitle = (TextView) itemView.findViewById(R.id.tv_note_title);
+            tvText = (TextView) itemView.findViewById(R.id.tv_note_text);
+        }
     }
 }
