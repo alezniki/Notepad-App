@@ -10,6 +10,7 @@ import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -36,6 +37,8 @@ public class MainActivity extends AppCompatActivity {
 
     public static final int REQUEST_DATA_FROM_NOTES_ACTIVITY = 1;
     public static final String ALLOW_MSG = "allow_msg";
+    public static final String DISPLAY_GREED = "display_grid";
+
 
     private NotesAdapter adapter;
     private List<Notes> list;
@@ -83,13 +86,17 @@ public class MainActivity extends AppCompatActivity {
                 startActivityForResult(intent,REQUEST_DATA_FROM_NOTES_ACTIVITY);
             }
         });
+
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+        getGridView();
 
         // Handle the ACTION_SEARCH intent by checking for it in your onCreate() method.
         handleIntent(getIntent());
 
         Toast.makeText(this, "Main.onCreate", Toast.LENGTH_SHORT).show();
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -99,6 +106,7 @@ public class MainActivity extends AppCompatActivity {
         // Get the SearchView and set the searchable configuration
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         SearchView searchView = (SearchView) menu.findItem(R.id.action_search_note).getActionView();
+
         // Assumes current activity is the searchable activity
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         searchView.setIconifiedByDefault(false); // Do not iconify the widget; expand it by default
@@ -115,7 +123,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                // Text has changed, apply filtering? Called when the user types each character in the text field
+                // Text has changed, Called when the user types each character in the text field
 
 //                adapter.getFilter().filter(newText);
                 return true;
@@ -182,7 +190,7 @@ public class MainActivity extends AppCompatActivity {
             String query = intent.getStringExtra(SearchManager.QUERY);
             //use the query to search your data somehow
 
-//            doMySearch(query);
+            doMySearch(query);
         }
     }
 
@@ -202,6 +210,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         listRefresh();
+        
+        getGridView();
 
 //        handleIntent(getIntent());
 
@@ -228,9 +238,20 @@ public class MainActivity extends AppCompatActivity {
 
     private void showNotificationMessage(String message) {
         boolean allowed = preferences.getBoolean(ALLOW_MSG, false);
+
         if (allowed) {
             Snackbar.make(findViewById(R.id.recycler), message, Snackbar.LENGTH_LONG).show();
         }
+    }
+
+    private void getGridView() {
+        recyclerView.setLayoutManager(layoutManager);
+
+        boolean grid = preferences.getBoolean(DISPLAY_GREED, false);
+
+        // Create display layout with 2 columns
+        if (grid) recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+
     }
 
     public DatabaseHelper getDatabaseHelper() {

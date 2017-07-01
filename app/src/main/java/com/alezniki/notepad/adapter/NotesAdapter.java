@@ -2,6 +2,8 @@ package com.alezniki.notepad.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +15,8 @@ import com.alezniki.notepad.activities.DetailActivity;
 import com.alezniki.notepad.model.Notes;
 
 import java.util.List;
+
+import static com.alezniki.notepad.activities.MainActivity.DISPLAY_GREED;
 
 /**
  * Created by nikola on 6/25/17.
@@ -32,8 +36,15 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
     // Create new views (invoked by the layout manager)
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        // If User selects the Grid Layout
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        boolean grid = preferences.getBoolean(DISPLAY_GREED, false);
+
+        int layoutID = grid ? R.layout.grid_items : R.layout.list_items;
+
         LayoutInflater inflater = LayoutInflater.from(context);
-        View itemView = inflater.inflate(R.layout.list_items, parent, false);
+//        View itemView = inflater.inflate(R.layout.list_items, parent, false);
+        View itemView = inflater.inflate(layoutID, parent, false);
 
         ViewHolder viewHolder = new ViewHolder(itemView);
         return viewHolder;
@@ -43,7 +54,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
     // This is where you supply data that you want to display to the user
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        // Get element from your dataset at this position
+        // Get element from your data set at this position
         final Notes note = listOfNotes.get(position);
 
         // Replace the contents of the view with that element
