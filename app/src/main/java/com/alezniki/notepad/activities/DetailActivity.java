@@ -22,7 +22,7 @@ import com.j256.ormlite.android.apptools.OpenHelperManager;
 import java.sql.SQLException;
 
 import static com.alezniki.notepad.activities.MainActivity.ALLOW_MSG;
-import static com.alezniki.notepad.activities.MainActivity.KEY_ID;
+import static com.alezniki.notepad.adapter.NotesAdapter.KEY_ID;
 
 public class DetailActivity extends AppCompatActivity {
 

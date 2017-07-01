@@ -35,7 +35,6 @@ public class MainActivity extends AppCompatActivity {
     private SharedPreferences preferences;
 
     public static final int REQUEST_DATA_FROM_NOTES_ACTIVITY = 1;
-    public static final String KEY_ID = "key_id";
     public static final String ALLOW_MSG = "allow_msg";
 
     private NotesAdapter adapter;
@@ -70,27 +69,11 @@ public class MainActivity extends AppCompatActivity {
 
         try {
             list = getDatabaseHelper().getNotesDao().queryForAll();
-            adapter.notifyDataSetChanged();
-//            adapter.addAll(list);
+            adapter.addToAdapter(list);
+//            adapter.notifyDataSetChanged();
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
-
-//        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                // This holds the value of the Notes position , which user has selected for further action
-//                if (position > -1) {
-//                    Notes pos = (Notes) listView.getItemAtPosition(position);
-//
-//                    Intent intent = new Intent(MainActivity.this, DetailActivity.class);
-//                    intent.putExtra(KEY_ID, pos.getNoteID());
-//
-//                    startActivity(intent);
-//                }
-//            }
-//        });
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
