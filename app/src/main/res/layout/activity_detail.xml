@@ -15,7 +15,7 @@
         android:layout_height="wrap_content"
         android:hint="@string/edit_title_detail"
         android:textAlignment="textStart"
-        android:textStyle="italic"
+        android:textStyle="bold"
         android:textSize="@dimen/text_size_note_title"
         android:padding="@dimen/padding_text" />
 

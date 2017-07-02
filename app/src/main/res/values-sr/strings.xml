@@ -19,7 +19,7 @@
     <string name="delete_notification">Beleška je uspešno obrisana.</string>
     <string name="create_notification">Beleška je uspešno sačuvana.</string>
     <string name="search">Pretraga</string>
-    <string name="search_hint">Pretraži beleške</string>
+    <string name="search_hint">Pretraži</string>
     <string name="dialog_positive_button">Obriši</string>
     <string name="dialog_negative_button">Otkaži</string>
 </resources>

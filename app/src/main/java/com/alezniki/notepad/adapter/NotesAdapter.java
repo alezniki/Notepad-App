@@ -8,12 +8,15 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.TextView;
 
 import com.alezniki.notepad.R;
 import com.alezniki.notepad.activities.DetailActivity;
 import com.alezniki.notepad.model.Notes;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.alezniki.notepad.activities.MainActivity.DISPLAY_GREED;
@@ -22,15 +25,17 @@ import static com.alezniki.notepad.activities.MainActivity.DISPLAY_GREED;
  * Created by nikola on 6/25/17.
  */
 
-public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> {
+public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> implements Filterable {
     public static final String KEY_ID = "key_id";
 
-    private List<Notes> listOfNotes; // list of items
+    private List<Notes> listOfNotes; // original list of items
+    private List<Notes> filteredList; // store filtered results
     private Context context;
 
     public NotesAdapter(Context context, List<Notes> list) {
         this.context = context;
         this.listOfNotes = list;
+        this.filteredList = list;
     }
 
     // Create new views (invoked by the layout manager)
@@ -55,11 +60,13 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         // Get element from your data set at this position
-        final Notes note = listOfNotes.get(position);
+        final Notes note = filteredList.get(position);
 
         // Replace the contents of the view with that element
-        holder.tvTitle.setText(note.getNoteTitle());
-        holder.tvText.setText(note.getNoteText());
+//        holder.tvTitle.setText(note.getNoteTitle());
+        holder.tvTitle.setText(filteredList.get(position).getNoteTitle());
+//        holder.tvText.setText(note.getNoteText());
+        holder.tvText.setText(filteredList.get(position).getNoteText());
 
         // Add click listener to the view
         holder.view.setOnClickListener(new View.OnClickListener() {
@@ -80,24 +87,66 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
     // Return the size of your dataset (invoked by the layout manager)
     @Override
     public int getItemCount() {
-        return listOfNotes.size();
+        return filteredList.size();
     }
 
     public void clearFromAdapter() {
-        int size = this.listOfNotes.size();
+        int size = this.filteredList.size();
 
         if (size > 0) {
             for (int i = 0; i < size ; i++) {
-                this.listOfNotes.remove(0);
+                this.filteredList.remove(0);
             }
             this.notifyItemRangeChanged(0, size);
         }
     }
 
     public void addToAdapter(List<Notes> list) {
-        this.listOfNotes.addAll(list);
+        this.filteredList.addAll(list);
         this.notifyItemRangeInserted(0, list.size()-1);
 
+    }
+
+    @Override
+    public Filter getFilter() {
+
+        return new Filter() {
+
+            // Get the searched text via SearchView widget
+            @Override
+            protected FilterResults performFiltering(CharSequence constraint) {
+                // Search View text input
+                String str = constraint.toString();
+
+                if (str.isEmpty()) {
+                   filteredList = listOfNotes;
+                } else {
+                    // Loop through original list of notes
+                    List<Notes> list = new ArrayList<>();
+                    for (Notes note : listOfNotes) {
+
+                        // Check if search contains the string and add it to a filtered list
+                        if (note.getNoteTitle().toLowerCase().contains(str.toLowerCase())
+                                || note.getNoteText().toLowerCase().contains(str.toString())) {
+                            list.add(note);
+                        }
+                    }
+
+                    filteredList = list;
+                }
+
+                FilterResults results = new FilterResults();
+                results.values = filteredList;
+                return results;
+            }
+
+            // Convert the FilterResults object to List object and update the adapter
+            @Override
+            protected void publishResults(CharSequence constraint, FilterResults results) {
+                filteredList = (List<Notes>) results.values;
+                notifyDataSetChanged();
+            }
+        };
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{

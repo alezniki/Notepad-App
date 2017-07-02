@@ -18,7 +18,7 @@
     <string name="delete_notification">The note is successfully deleted.</string>
     <string name="create_notification">New note is created successfully.</string>
     <string name="search">Search</string>
-    <string name="search_hint">Search notes</string>
+    <string name="search_hint">Search</string>
     <string name="dialog_positive_button">Delete</string>
     <string name="dialog_negative_button">Cancel</string>
 </resources>

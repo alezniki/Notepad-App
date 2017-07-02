@@ -15,7 +15,7 @@
         android:layout_height="wrap_content"
         android:hint="@string/enter_title_notes"
         android:textAlignment="textStart"
-        android:textStyle="italic"
+        android:textStyle="bold"
         android:textSize="@dimen/text_size_note_title"
         android:padding="@dimen/padding_text" />
 

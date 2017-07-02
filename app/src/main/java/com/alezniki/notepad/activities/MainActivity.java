@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Construct the data source
         list = new ArrayList<>();
-        recyclerView  = (RecyclerView) findViewById(R.id.recycler);
+        recyclerView = (RecyclerView) findViewById(R.id.recycler);
 
         // 1. Use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView
@@ -66,13 +66,13 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(layoutManager);
 
         //3. Create the adapter to convert the array to views
-        adapter = new NotesAdapter(this,list);
+        adapter = new NotesAdapter(this, list);
         recyclerView.setAdapter(adapter);
 
         try {
             list = getDatabaseHelper().getNotesDao().queryForAll();
             adapter.addToAdapter(list);
-//            adapter.notifyDataSetChanged();
+            adapter.notifyDataSetChanged();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -82,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, NotesActivity.class);
-                startActivityForResult(intent,REQUEST_DATA_FROM_NOTES_ACTIVITY);
+                startActivityForResult(intent, REQUEST_DATA_FROM_NOTES_ACTIVITY);
             }
         });
 
@@ -90,12 +90,7 @@ public class MainActivity extends AppCompatActivity {
 
         getGridView();
 
-        // Handle the ACTION_SEARCH intent by checking for it in your onCreate() method.
-        handleIntent(getIntent());
-
-//        Toast.makeText(this, "Main.onCreate", Toast.LENGTH_SHORT).show();
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -103,8 +98,11 @@ public class MainActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.menu_main, menu);
 
         // Get the SearchView and set the searchable configuration
+//        SearchView searchView = (SearchView) menu.findItem(R.id.action_search_note).getActionView();
+        MenuItem item = menu.findItem(R.id.action_search_note);
+        SearchView searchView = (SearchView) item.getActionView();
+
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        SearchView searchView = (SearchView) menu.findItem(R.id.action_search_note).getActionView();
 
         // Assumes current activity is the searchable activity
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
@@ -113,24 +111,11 @@ public class MainActivity extends AppCompatActivity {
         searchView.setSubmitButtonEnabled(false);
 //        searchView.setOnQueryTextListener(this);
 
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                // Perform the final search, Triggered when the search is pressed
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                // Text has changed, Called when the user types each character in the text field
-
-//                adapter.getFilter().filter(newText);
-                return true;
-            }
-        });
+        searchQuery(searchView);
 
         return true;
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -176,43 +161,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onNewIntent(Intent intent) {
-        setIntent(intent);
-        handleIntent(intent);
-
-//        Toast.makeText(this, "onNewIntent", Toast.LENGTH_SHORT).show();
-//        listRefresh();
-    }
-
-    private void handleIntent(Intent intent) {
-        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
-            String query = intent.getStringExtra(SearchManager.QUERY);
-            //use the query to search your data somehow
-
-            doMySearch(query);
-        }
-    }
-
-    private void  doMySearch(String query) {
-
-        try {
-            getDatabaseHelper().getNotesDao().queryBuilder()
-                    .where().eq(Notes.FIELD_NAME_TITLE, query)
-                    .or().eq(Notes.FIELD_NAME_TEXT,query)
-                    .query();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
     protected void onResume() {
         super.onResume();
+
+        adapter = new NotesAdapter(this,list);
+        recyclerView.setAdapter(adapter);
+
         listRefresh();
-
         getGridView();
-
-//        handleIntent(getIntent());
 
 //        Toast.makeText(this, "Main.onResume", Toast.LENGTH_SHORT).show();
     }
@@ -231,9 +187,27 @@ public class MainActivity extends AppCompatActivity {
             adapter.addToAdapter(list); // Set up new elements
             adapter.notifyDataSetChanged(); // Refresh data
 
-//            handleIntent(getIntent());
         }
     }
+
+    //  implement OnQueryTextListener
+    private void searchQuery(SearchView searchView) {
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                // Perform the final search, Triggered when the search is pressed
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                // Text has changed, Called when the user types each character in the text field
+                adapter.getFilter().filter(newText);
+                return true;
+            }
+        });
+    }
+
 
     private void showNotificationMessage(String message) {
         boolean allowed = preferences.getBoolean(ALLOW_MSG, false);
