@@ -22,4 +22,7 @@
     <string name="search_hint">Pretraži</string>
     <string name="dialog_positive_button">Obriši</string>
     <string name="dialog_negative_button">Otkaži</string>
+    <string name="error_create_notification">Greška prilikom unosa nove beleške!</string>
+    <string name="error_update_notification">Greška prilikom izmene postojeće beleške!</string>
+    <string name="error_delete_notification">Greška prilikom brisanja postojeće beleške!</string>
 </resources>

@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Notepad</string>
     <string name="action_settings">Settings</string>
@@ -11,7 +12,7 @@
     <string name="preferences_main_title">User Preferences</string>
     <string name="preferences_notification_title">Notifications</string>
     <string name="preferences_notification_summary">Allow brief notification messages</string>
-    <string name="preferences_display_title">Display Grid View</string>
+    <string name="preferences_display_title">Display grid</string>
     <string name="preferences_display_summary">Display notes in multi-column grid</string>
     <string name="update_notification">The note is successfully updated.</string>
     <string name="alert_message">This note will be deleted!</string>
@@ -21,4 +22,7 @@
     <string name="search_hint">Search</string>
     <string name="dialog_positive_button">Delete</string>
     <string name="dialog_negative_button">Cancel</string>
+    <string name="error_create_notification">Error while trying to create new note!</string>
+    <string name="error_update_notification">Error while trying to update existing note!</string>
+    <string name="error_delete_notification">Error while trying to delete existing note!</string>
 </resources>

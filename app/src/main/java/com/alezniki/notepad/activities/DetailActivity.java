@@ -96,6 +96,7 @@ public class DetailActivity extends AppCompatActivity {
             finish();
         } catch (SQLException e) {
             e.printStackTrace();
+            showNotificationMessage(getString(R.string.error_update_notification));
         }
     }
 
@@ -103,39 +104,41 @@ public class DetailActivity extends AppCompatActivity {
         LayoutInflater inflater = getLayoutInflater();
         View alertLayout = inflater.inflate(android.R.layout.select_dialog_item, null);
 
-
-        AlertDialog.Builder alert = new AlertDialog.Builder(this);
-        alert.setMessage(R.string.alert_message);
+        AlertDialog alert = new AlertDialog.Builder(this).create();
+        alert.setMessage(getString(R.string.alert_message));
 
         // Set the view from XML inside AlertDialog
         alert.setView(alertLayout);
         // Disallow cancel of AlertDialog on click of back button and outside touch
         alert.setCancelable(false);
 
-        alert.setNegativeButton(R.string.dialog_negative_button, new DialogInterface.OnClickListener() {
+        alert.setButton(AlertDialog.BUTTON_NEGATIVE, getString(R.string.dialog_negative_button),
+                new DialogInterface.OnClickListener() {
 
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-
-        alert.setPositiveButton(R.string.dialog_positive_button, new DialogInterface.OnClickListener() {
-
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                if (note != null) {
-                    try {
-                        getDatabaseHelper().getNotesDao().delete(note);
-                        showNotificationMessage(getString(R.string.delete_notification));
-                        finish();
-                    } catch (SQLException e) {
-                        e.printStackTrace();
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
                     }
-                }
-                dialog.dismiss();
-            }
-        });
+                });
+
+        alert.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.dialog_positive_button),
+                new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (note != null) {
+                            try {
+                                getDatabaseHelper().getNotesDao().delete(note);
+                                showNotificationMessage(getString(R.string.delete_notification));
+                                finish();
+                            } catch (SQLException e) {
+                                e.printStackTrace();
+                                showNotificationMessage(getString(R.string.error_delete_notification));
+                            }
+                        }
+                        dialog.dismiss();
+                    }
+                });
 
         alert.show();
     }

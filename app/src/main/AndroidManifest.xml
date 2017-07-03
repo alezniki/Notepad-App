@@ -31,7 +31,8 @@
         <activity android:name=".activities.NotesActivity"
             android:windowSoftInputMode="adjustResize" />
         <activity android:name=".activities.DetailActivity"
-            android:windowSoftInputMode="adjustResize"/>
+            android:windowSoftInputMode="adjustPan"
+            android:configChanges="orientation|screenSize"/>
         <activity android:name=".activities.SettingsActivity"/>
 
     </application>

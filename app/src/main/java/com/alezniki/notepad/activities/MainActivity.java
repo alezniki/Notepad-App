@@ -8,7 +8,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -18,6 +17,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.alezniki.notepad.R;
 import com.alezniki.notepad.adapter.NotesAdapter;
@@ -153,6 +153,7 @@ public class MainActivity extends AppCompatActivity {
                     showNotificationMessage(getString(R.string.create_notification));
                 } catch (SQLException e) {
                     e.printStackTrace();
+                    showNotificationMessage(getString(R.string.error_create_notification));
                 }
 
             }
@@ -213,7 +214,7 @@ public class MainActivity extends AppCompatActivity {
         boolean allowed = preferences.getBoolean(ALLOW_MSG, false);
 
         if (allowed) {
-            Snackbar.make(findViewById(R.id.recycler), message, Snackbar.LENGTH_LONG).show();
+            Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
         }
     }
 
