@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
     private DatabaseHelper helper = null;
     private SharedPreferences preferences;
 
-    public static final int REQUEST_DATA_FROM_NOTES_ACTIVITY = 1;
+    private static final int REQUEST_DATA_FROM_NOTES_ACTIVITY = 1;
     public static final String ALLOW_MSG = "allow_msg";
     public static final String DISPLAY_GREED = "display_grid";
 
@@ -43,8 +43,6 @@ public class MainActivity extends AppCompatActivity {
     private List<Notes> list;
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager layoutManager;
-
-    private Notes note;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -142,7 +140,7 @@ public class MainActivity extends AppCompatActivity {
                 String title = data.getStringExtra("note_title");
                 String text = data.getStringExtra("note_text");
 
-                note = new Notes();
+                Notes note = new Notes();
                 note.setNoteTitle(title);
                 note.setNoteText(text);
 
@@ -228,7 +226,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public DatabaseHelper getDatabaseHelper() {
+    private DatabaseHelper getDatabaseHelper() {
         if (helper == null) {
             helper = OpenHelperManager.getHelper(MainActivity.this,DatabaseHelper.class);
         }

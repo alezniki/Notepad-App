@@ -7,6 +7,7 @@ import com.j256.ormlite.table.DatabaseTable;
  * Created by nikola on 6/25/17.
  */
 
+@SuppressWarnings("ALL")
 @DatabaseTable(tableName = Notes.TABLE_NAME_NOTES)
 public class Notes {
 
@@ -14,9 +15,9 @@ public class Notes {
     public static final String TABLE_NAME_NOTES = "notes";
 
     // Column Names
-    public static final String FIELD_NAME_ID = "id";
-    public static final String FIELD_NAME_TITLE = "title";
-    public static final String FIELD_NAME_TEXT = "text";
+    private static final String FIELD_NAME_ID = "id";
+    private static final String FIELD_NAME_TITLE = "title";
+    private static final String FIELD_NAME_TEXT = "text";
 
     @DatabaseField(columnName = FIELD_NAME_ID, generatedId = true)
     private int noteID;
@@ -33,9 +34,9 @@ public class Notes {
         return noteID;
     }
 
-    public void setNoteID(int noteID) {
-        this.noteID = noteID;
-    }
+//    public void setNoteID(int noteID) {
+//        this.noteID = noteID;
+//    }
 
     public String getNoteTitle() {
         return noteTitle;

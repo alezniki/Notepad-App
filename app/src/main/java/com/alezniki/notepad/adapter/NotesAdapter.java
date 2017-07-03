@@ -25,12 +25,13 @@ import static com.alezniki.notepad.activities.MainActivity.DISPLAY_GREED;
  * Created by nikola on 6/25/17.
  */
 
+@SuppressWarnings("ALL")
 public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> implements Filterable {
     public static final String KEY_ID = "key_id";
 
-    private List<Notes> listOfNotes; // original list of items
+    private final List<Notes> listOfNotes; // original list of items
     private List<Notes> filteredList; // store filtered results
-    private Context context;
+    private final Context context;
 
     public NotesAdapter(Context context, List<Notes> list) {
         this.context = context;
@@ -51,8 +52,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
 //        View itemView = inflater.inflate(R.layout.list_items, parent, false);
         View itemView = inflater.inflate(layoutID, parent, false);
 
-        ViewHolder viewHolder = new ViewHolder(itemView);
-        return viewHolder;
+        return new ViewHolder(itemView);
     }
 
     // Replace the contents of a view (invoked by the layout manager)
@@ -84,7 +84,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
 
     }
 
-    // Return the size of your dataset (invoked by the layout manager)
+    // Return the size of your data set (invoked by the layout manager)
     @Override
     public int getItemCount() {
         return filteredList.size();
@@ -127,7 +127,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
 
                         // Check if search contains the string and add it to a filtered list
                         if (note.getNoteTitle().toLowerCase().contains(str.toLowerCase())
-                                || note.getNoteText().toLowerCase().contains(str.toString())) {
+                                || note.getNoteText().toLowerCase().contains(str.toLowerCase())) {
                             list.add(note);
                         }
                     }
@@ -150,11 +150,11 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{
-        public TextView tvTitle;
-        public TextView tvText;
+        public final TextView tvTitle;
+        public final TextView tvText;
 
         // Handle user events in a RecyclerView
-        public View view;
+        public final View view;
 
         public ViewHolder(View itemView) {
             super(itemView);

@@ -150,7 +150,7 @@ public class DetailActivity extends AppCompatActivity {
         }
     }
 
-    public DatabaseHelper getDatabaseHelper() {
+    private DatabaseHelper getDatabaseHelper() {
         if (helper == null) {
             helper = OpenHelperManager.getHelper(DetailActivity.this,DatabaseHelper.class);
         }

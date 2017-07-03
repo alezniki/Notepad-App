@@ -6,6 +6,7 @@ android {
     defaultConfig {
         applicationId "com.alezniki.notepad"
         minSdkVersion 22
+        //noinspection OldTargetApi
         targetSdkVersion 25
         versionCode 1
         versionName "1.0"

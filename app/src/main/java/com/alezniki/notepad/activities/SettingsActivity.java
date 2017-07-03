@@ -10,6 +10,7 @@ import com.alezniki.notepad.R;
  * Created by nikola on 6/26/17.
  */
 
+@SuppressWarnings("ALL")
 public class SettingsActivity extends PreferenceActivity {
 
     @Override

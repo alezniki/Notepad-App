@@ -15,11 +15,12 @@ import java.sql.SQLException;
  * Created by nikola on 6/25/17.
  */
 
+@SuppressWarnings("ALL")
 public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 
     // Database Info
     private static final String DATABASE_NAME = "notes.db";
-    private static int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 1;
 
     private Dao<Notes,Integer> notesDao = null;
 
