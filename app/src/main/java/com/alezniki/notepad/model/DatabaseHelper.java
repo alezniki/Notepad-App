@@ -2,7 +2,6 @@ package com.alezniki.notepad.model;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
 
 import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
 import com.j256.ormlite.dao.Dao;
@@ -34,7 +33,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
             TableUtils.createTable(connectionSource, Notes.class);
         } catch (SQLException e) {
             e.printStackTrace();
-            Log.e(DatabaseHelper.class.getName(),"UNABLE TO CREATE DATABASE",e);
+            //Log.e(DatabaseHelper.class.getName(),"UNABLE TO CREATE DATABASE",e);
         }
     }
 
@@ -45,8 +44,8 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
                 TableUtils.dropTable(connectionSource, Notes.class, true);
             } catch (SQLException e) {
                 e.printStackTrace();
-                Log.e(DatabaseHelper.class.getName(),
-                        "UNABLE TO UPGRADE DATABASE FROM VERSION " + oldVersion + " TO NEW " + newVersion, e);
+              //  Log.e(DatabaseHelper.class.getName(),
+              //          "UNABLE TO UPGRADE DATABASE FROM VERSION " + oldVersion + " TO NEW " + newVersion, e);
             }
         }
     }

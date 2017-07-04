@@ -222,7 +222,9 @@ public class MainActivity extends AppCompatActivity {
         boolean grid = preferences.getBoolean(DISPLAY_GREED, false);
 
         // Create display layout with 2 columns
-        if (grid) recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+        if (grid) {
+            recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+        }
 
     }
 
