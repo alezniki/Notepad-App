@@ -14,7 +14,7 @@ import android.widget.TextView;
 
 import com.alezniki.notepad.R;
 import com.alezniki.notepad.activities.DetailActivity;
-import com.alezniki.notepad.model.Notes;
+import com.alezniki.notepad.model.Note;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,88 +22,123 @@ import java.util.List;
 import static com.alezniki.notepad.activities.MainActivity.DISPLAY_GREED;
 
 /**
- * Created by nikola on 6/25/17.
+ * Note Adapter
+ * <p>
+ * Created by nikola aleksic on 6/25/17.
  */
-
 @SuppressWarnings("ALL")
 public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> implements Filterable {
+
+    /**
+     * Key id
+     */
     public static final String KEY_ID = "key_id";
 
-    private final List<Notes> listOfNotes; // original list of items
-    private List<Notes> filteredList; // store filtered results
+    /**
+     * Original list of notes
+     */
+    private final List<Note> notes;
+
+    /**
+     * Filtered list of notes
+     * <p>
+     * Store filtered results
+     */
+    private List<Note> filteredList;
+
+    /**
+     * Context
+     */
     private final Context context;
 
-    public NotesAdapter(Context context, List<Notes> list) {
+    /**
+     * Constructor
+     *
+     * @param context contexr
+     * @param notes   list of notes
+     */
+    public NotesAdapter(Context context, List<Note> notes) {
         this.context = context;
-        this.listOfNotes = list;
-        this.filteredList = list;
+        this.notes = notes;
+        this.filteredList = notes;
     }
 
-    // Create new views (invoked by the layout manager)
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        // If User selects the Grid Layout
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        boolean grid = preferences.getBoolean(DISPLAY_GREED, false);
+        //Create new views (invoked by the layout manager)
 
-        int layoutID = grid ? R.layout.grid_items : R.layout.list_items;
+        //If User selects the Grid Layout
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+
+        boolean hasGrid = preferences.getBoolean(DISPLAY_GREED, false);
+
+        int layoutID = hasGrid ? R.layout.grid_items : R.layout.list_items;
 
         LayoutInflater inflater = LayoutInflater.from(context);
-//        View itemView = inflater.inflate(R.layout.list_items, parent, false);
         View itemView = inflater.inflate(layoutID, parent, false);
 
         return new ViewHolder(itemView);
     }
 
-    // Replace the contents of a view (invoked by the layout manager)
-    // This is where you supply data that you want to display to the user
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        // Get element from your data set at this position
-        final Notes note = filteredList.get(position);
+        //Replace the contents of a view (invoked by the layout manager)
+        //This is where you supply data that you want to display to the user
 
-        // Replace the contents of the view with that element
-//        holder.tvTitle.setText(note.getNoteTitle());
-        holder.tvTitle.setText(filteredList.get(position).getNoteTitle());
-//        holder.tvText.setText(note.getNoteText());
-        holder.tvText.setText(filteredList.get(position).getNoteText());
+        //Get element from your data set at this position
+        final Note note = filteredList.get(position);
 
-        // Add click listener to the view
+        //Replace the contents of the view with that element
+        holder.tvTitle.setText(note.getNoteTitle());
+        holder.tvText.setText(note.getNoteText());
+
+        //Add click listener to the view
         holder.view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                Toast.makeText(context, "You selected: " + note.getNoteTitle(), Toast.LENGTH_SHORT).show();
 
-                // Navigate to Detail Activity
-                int keyID = note.getNoteID(); // Unique ID to pass between activities;
+                //Unique ID to pass between activities;
+                int keyID = note.getNoteID();
+
                 Intent intent = new Intent(context, DetailActivity.class);
                 intent.putExtra(KEY_ID, keyID);
+
+                //Navigate to Detail Activity
                 context.startActivity(intent);
             }
         });
-
     }
 
-    // Return the size of your data set (invoked by the layout manager)
     @Override
     public int getItemCount() {
+        //Return the size of your data set (invoked by the layout manager)
         return filteredList.size();
     }
 
+    /**
+     * Clear from adapter
+     */
     public void clearFromAdapter() {
+
         int size = this.filteredList.size();
 
         if (size > 0) {
-            for (int i = 0; i < size ; i++) {
+            for (int i = 0; i < size; i++) {
                 this.filteredList.remove(0);
             }
+
             this.notifyItemRangeChanged(0, size);
         }
     }
 
-    public void addToAdapter(List<Notes> list) {
-        this.filteredList.addAll(list);
-        this.notifyItemRangeInserted(0, list.size()-1);
+    /**
+     * Add to adapter
+     *
+     * @param notes list of notes
+     */
+    public void addToAdapter(List<Note> notes) {
+        this.filteredList.addAll(notes);
+        this.notifyItemRangeInserted(0, notes.size() - 1);
 
     }
 
@@ -112,22 +147,23 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
 
         return new Filter() {
 
-            // Get the searched text via SearchView widget
             @Override
             protected FilterResults performFiltering(CharSequence constraint) {
-                // Search View text input
-                String str = constraint.toString();
+                //Get the searched text via SearchView widget
 
-                if (str.isEmpty()) {
-                   filteredList = listOfNotes;
+                //Search view text input
+                String input = constraint.toString();
+
+                if (input.isEmpty()) {
+                    filteredList = notes;
                 } else {
                     // Loop through original list of notes
-                    List<Notes> list = new ArrayList<>();
-                    for (Notes note : listOfNotes) {
+                    List<Note> list = new ArrayList<>();
+                    for (Note note : notes) {
 
                         // Check if search contains the string and add it to a filtered list
-                        if (note.getNoteTitle().toLowerCase().contains(str.toLowerCase())
-                                || note.getNoteText().toLowerCase().contains(str.toLowerCase())) {
+                        if (note.getNoteTitle().toLowerCase().contains(input.toLowerCase())
+                                || note.getNoteText().toLowerCase().contains(input.toLowerCase())) {
                             list.add(note);
                         }
                     }
@@ -137,32 +173,45 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
 
                 FilterResults results = new FilterResults();
                 results.values = filteredList;
+
                 return results;
             }
 
-            // Convert the FilterResults object to List object and update the adapter
             @Override
             protected void publishResults(CharSequence constraint, FilterResults results) {
-                filteredList = (List<Notes>) results.values;
+                //Convert the FilterResults object to List object and update the adapter
+                filteredList = (List<Note>) results.values;
                 notifyDataSetChanged();
             }
         };
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder{
+    /**
+     * View holder
+     */
+    public class ViewHolder extends RecyclerView.ViewHolder {
+
+        //Note title
         public final TextView tvTitle;
+
+        //Note text
         public final TextView tvText;
 
-        // Handle user events in a RecyclerView
+        //View to handle user events
         public final View view;
 
+        /**
+         * Constructor
+         *
+         * @param itemView item view
+         */
         public ViewHolder(View itemView) {
             super(itemView);
 
             tvTitle = (TextView) itemView.findViewById(R.id.tv_note_title);
             tvText = (TextView) itemView.findViewById(R.id.tv_note_text);
 
-            // Now the view reference will be available to the rest of the adapter
+            //Now the view reference will be available to the rest of the adapter
             view = itemView;
         }
     }

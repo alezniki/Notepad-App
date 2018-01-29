@@ -16,36 +16,60 @@ import android.widget.Toast;
 
 import com.alezniki.notepad.R;
 import com.alezniki.notepad.model.DatabaseHelper;
-import com.alezniki.notepad.model.Notes;
+import com.alezniki.notepad.model.Note;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 
 import java.sql.SQLException;
 
-import static com.alezniki.notepad.activities.MainActivity.ALLOW_MSG;
+import static com.alezniki.notepad.activities.MainActivity.ALLOW_MESSAGE;
 import static com.alezniki.notepad.adapter.NotesAdapter.KEY_ID;
 
+/**
+ * Details activity
+ *
+ * @author Nikola Aleksic
+ */
 public class DetailActivity extends AppCompatActivity {
 
+    /**
+     * Database helper
+     */
     private DatabaseHelper helper = null;
+
+    /**
+     * Shared preferences
+     */
     private SharedPreferences preferences;
 
+    /**
+     * Edited note title
+     */
     private EditText etTitle;
+
+    /**
+     * Edited note text
+     */
     private EditText etText;
 
-    private Notes note;
+    /**
+     * Note
+     */
+    private Note note;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_detail);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         if (toolbar != null) setSupportActionBar(toolbar);
 
-        // Receive the object that which has been sent through Intent from MainActivity
+        //Receive the object that which has been sent through Intent from MainActivity
         int keyID = getIntent().getExtras().getInt(KEY_ID);
 
         try {
-            note = getDatabaseHelper().getNotesDao().queryForId(keyID);
+            note = getDatabaseHelper().getNotes().queryForId(keyID);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -61,37 +85,44 @@ public class DetailActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
+
+        //Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_detail, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here.
+
+        //Handle action bar item clicks here.
         int id = item.getItemId();
 
         switch (id) {
-            case R.id.action_update_note:
-//                Toast.makeText(this, "UPDATE", Toast.LENGTH_SHORT).show();
-                updateNotesItem();
-                break;
-            case R.id.action_delete_note:
-//                Toast.makeText(this, "DELETE", Toast.LENGTH_SHORT).show();
-                deleteNotesItem();
-                break;
-        }
 
+            case R.id.action_update_note: {
+                updateNoteItem();
+                break;
+            }
+
+            case R.id.action_delete_note: {
+                deleteNoteItem();
+                break;
+            }
+        }
 
         return super.onOptionsItemSelected(item);
     }
 
-    private void updateNotesItem() {
+    /**
+     * Update note item
+     */
+    private void updateNoteItem() {
+
         note.setNoteTitle(etTitle.getText().toString());
         note.setNoteText(etText.getText().toString());
 
         try {
-            getDatabaseHelper().getNotesDao().update(note);
+            getDatabaseHelper().getNotes().update(note);
             showNotificationMessage(getString(R.string.update_notification));
             finish();
         } catch (SQLException e) {
@@ -100,16 +131,21 @@ public class DetailActivity extends AppCompatActivity {
         }
     }
 
-    private void deleteNotesItem() {
+    /**
+     * Delete note item
+     */
+    private void deleteNoteItem() {
+
         LayoutInflater inflater = getLayoutInflater();
         View alertLayout = inflater.inflate(android.R.layout.select_dialog_item, null);
 
         AlertDialog alert = new AlertDialog.Builder(this).create();
         alert.setMessage(getString(R.string.alert_message));
 
-        // Set the view from XML inside AlertDialog
+        //Set the view from XML inside AlertDialog
         alert.setView(alertLayout);
-        // Disallow cancel of AlertDialog on click of back button and outside touch
+
+        //Disallow cancel of AlertDialog on click of back button and outside touch
         alert.setCancelable(false);
 
         alert.setButton(AlertDialog.BUTTON_NEGATIVE, getString(R.string.dialog_negative_button),
@@ -128,7 +164,7 @@ public class DetailActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         if (note != null) {
                             try {
-                                getDatabaseHelper().getNotesDao().delete(note);
+                                getDatabaseHelper().getNotes().delete(note);
                                 showNotificationMessage(getString(R.string.delete_notification));
                                 finish();
                             } catch (SQLException e) {
@@ -143,27 +179,40 @@ public class DetailActivity extends AppCompatActivity {
         alert.show();
     }
 
+    /**
+     * Show notification message
+     *
+     * @param message message
+     */
     private void showNotificationMessage(String message) {
-        boolean allowed = preferences.getBoolean(ALLOW_MSG, false);
-        if (allowed) {
+
+        boolean isAllowed = preferences.getBoolean(ALLOW_MESSAGE, false);
+
+        if (isAllowed) {
             Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
         }
     }
 
+    /**
+     * Get database helper
+     *
+     * @return database helper
+     */
     private DatabaseHelper getDatabaseHelper() {
+
         if (helper == null) {
-            helper = OpenHelperManager.getHelper(DetailActivity.this,DatabaseHelper.class);
+            helper = OpenHelperManager.getHelper(DetailActivity.this, DatabaseHelper.class);
         }
 
         return helper;
     }
 
-    // Release Database Helper when done
     @Override
     protected void onDestroy() {
         super.onDestroy();
 
         if (helper != null) {
+            //Release database helper when done
             OpenHelperManager.releaseHelper();
             helper = null;
         }

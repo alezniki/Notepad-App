@@ -4,33 +4,32 @@
     android:id="@+id/card_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    card_view:cardCornerRadius="@dimen/card_radius"
+    android:layout_margin="@dimen/card_margin"
     android:elevation="@dimen/card_elevation"
-    android:layout_margin="@dimen/card_margin">
+    card_view:cardCornerRadius="@dimen/card_radius">
 
     <GridLayout
-        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <!--Notes Title TextView-->
+        <!--Notes title-->
         <TextView
             android:id="@+id/tv_note_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:padding="@dimen/padding_text"
             android:textAlignment="textStart"
-            android:textStyle="bold"
             android:textSize="@dimen/text_size_note_title"
-            android:padding="@dimen/padding_text"/>
+            android:textStyle="bold" />
 
-        <!--Notes Text TextView-->
+        <!--Notes text-->
         <TextView
             android:id="@+id/tv_note_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:padding="@dimen/padding_text"
             android:textAlignment="textStart"
-            android:textSize="@dimen/text_size_note_text"
-            android:padding="@dimen/padding_text"/>
+            android:textSize="@dimen/text_size_note_text" />
     </GridLayout>
-
 </android.support.v7.widget.CardView>

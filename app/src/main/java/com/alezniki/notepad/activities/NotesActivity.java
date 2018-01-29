@@ -11,15 +11,29 @@ import android.widget.EditText;
 
 import com.alezniki.notepad.R;
 
+/**
+ * Note activity
+ *
+ * @author Nikola Aleksic
+ */
 public class NotesActivity extends AppCompatActivity {
 
+    /**
+     * Edited note title
+     */
     private EditText etTitle;
+
+    /**
+     * Edited note text
+     */
     private EditText etText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_notes);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         if (toolbar != null) setSupportActionBar(toolbar);
 
@@ -29,17 +43,18 @@ public class NotesActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
+
+        //Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_notes, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here.
+
+        //Handle action bar item clicks here.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_save_note) {
             saveNote();
             return true;
@@ -48,25 +63,30 @@ public class NotesActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    // Send data about created note back to main activity
+    /**
+     * Save note
+     * <p>
+     * Send data about created note back to main activity
+     */
     private void saveNote() {
+
         String title = etTitle.getText().toString();
         String text = etText.getText().toString();
 
         if (title.trim().isEmpty() && text.trim().isEmpty()) {
-            // // If there is no input from the user return to main activity
 
+            //If there is no input from the user return to main activity
             finish();
         } else {
+
             // Send note data
             Intent intent = new Intent();
 
-            intent.putExtra("note_title",title);
-            intent.putExtra("note_text",text);
+            intent.putExtra("note_title", title);
+            intent.putExtra("note_text", text);
 
-            setResult(Activity.RESULT_OK,intent);
+            setResult(Activity.RESULT_OK, intent);
             finish();
         }
     }
-
 }

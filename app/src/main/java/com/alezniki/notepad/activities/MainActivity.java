@@ -22,61 +22,101 @@ import android.widget.Toast;
 import com.alezniki.notepad.R;
 import com.alezniki.notepad.adapter.NotesAdapter;
 import com.alezniki.notepad.model.DatabaseHelper;
-import com.alezniki.notepad.model.Notes;
+import com.alezniki.notepad.model.Note;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Main activity
+ *
+ * @author Nikola Aleksic
+ */
 public class MainActivity extends AppCompatActivity {
 
+    /**
+     * Database helper
+     */
     private DatabaseHelper helper = null;
+
+    /**
+     * Shared preferences
+     */
     private SharedPreferences preferences;
 
+    /**
+     * Request data from notes activity
+     */
     private static final int REQUEST_DATA_FROM_NOTES_ACTIVITY = 1;
-    public static final String ALLOW_MSG = "allow_msg";
+
+    /**
+     * Allow message
+     */
+    public static final String ALLOW_MESSAGE = "allow_msg";
+
+    /**
+     * Display grid
+     */
     public static final String DISPLAY_GREED = "display_grid";
 
-
+    /**
+     * Notes adapter
+     */
     private NotesAdapter adapter;
-    private List<Notes> list;
+
+    /**
+     * List of notes
+     */
+    private List<Note> notes;
+
+    /**
+     * Recycler view
+     */
     private RecyclerView recyclerView;
+
+    /**
+     * Layout manager
+     */
     private RecyclerView.LayoutManager layoutManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         if (toolbar != null) setSupportActionBar(toolbar);
 
-        // Construct the data source
-        list = new ArrayList<>();
+        //Construct the data source
+        notes = new ArrayList<>();
         recyclerView = (RecyclerView) findViewById(R.id.recycler);
 
-        // 1. Use this setting to improve performance if you know that changes
-        // in content do not change the layout size of the RecyclerView
+        //1.Use this setting to improve performance if you know that changes
+        //in content do not change the layout size of the RecyclerView
         recyclerView.setHasFixedSize(true);
 
-        // 2. Use a linear layout manager
+        //2.Use a linear layout manager
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
 
-        //3. Create the adapter to convert the array to views
-        adapter = new NotesAdapter(this, list);
+        //3.Create the adapter to convert the array to views
+        adapter = new NotesAdapter(this, notes);
         recyclerView.setAdapter(adapter);
 
         try {
-            list = getDatabaseHelper().getNotesDao().queryForAll();
-            adapter.addToAdapter(list);
+            notes = getDatabaseHelper().getNotes().queryForAll();
+            adapter.addToAdapter(notes);
             adapter.notifyDataSetChanged();
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        //Add note button and handle click event
+        FloatingActionButton button = (FloatingActionButton) findViewById(R.id.add_note_button);
+        button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, NotesActivity.class);
@@ -87,27 +127,28 @@ public class MainActivity extends AppCompatActivity {
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         getGridView();
-
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
+
+        //Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
 
-        // Get the SearchView and set the searchable configuration
-//        SearchView searchView = (SearchView) menu.findItem(R.id.action_search_note).getActionView();
         MenuItem item = menu.findItem(R.id.action_search_note);
-        SearchView searchView = (SearchView) item.getActionView();
 
+        //Get the SearchView and set the searchable configuration
+        SearchView searchView = (SearchView) item.getActionView();
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
 
-        // Assumes current activity is the searchable activity
+        //Assumes current activity is the searchable activity
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-        searchView.setIconifiedByDefault(false); // Do not iconify the widget; expand it by default
+
+        //Do not iconify the widget; expand it by default
+        searchView.setIconifiedByDefault(false);
 
         searchView.setSubmitButtonEnabled(false);
-//        searchView.setOnQueryTextListener(this);
+        //searchView.setOnQueryTextListener(this);
 
         searchQuery(searchView);
 
@@ -117,10 +158,10 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here.
+
+        //Handle action bar item clicks here.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             startActivity(new Intent(MainActivity.this, SettingsActivity.class));
             return true;
@@ -135,27 +176,26 @@ public class MainActivity extends AppCompatActivity {
 
         if (requestCode == REQUEST_DATA_FROM_NOTES_ACTIVITY) {
 
-           if (resultCode == Activity.RESULT_OK) {
-                // If user adds new note
+            if (resultCode == Activity.RESULT_OK) {
+
+                //If user adds new note
                 String title = data.getStringExtra("note_title");
                 String text = data.getStringExtra("note_text");
 
-                Notes note = new Notes();
+                Note note = new Note();
                 note.setNoteTitle(title);
                 note.setNoteText(text);
 
-                // Create new note into database
                 try {
-                    getDatabaseHelper().getNotesDao().create(note);
-                    listRefresh();
+                    //Create new note into database
+                    getDatabaseHelper().getNotes().create(note);
+                    refresh();
                     showNotificationMessage(getString(R.string.create_notification));
                 } catch (SQLException e) {
                     e.printStackTrace();
                     showNotificationMessage(getString(R.string.error_create_notification));
                 }
-
             }
-
         }
     }
 
@@ -163,84 +203,111 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        adapter = new NotesAdapter(this,list);
+        adapter = new NotesAdapter(this, notes);
         recyclerView.setAdapter(adapter);
 
-        listRefresh();
+        refresh();
         getGridView();
-
-//        Toast.makeText(this, "Main.onResume", Toast.LENGTH_SHORT).show();
     }
 
-    private void listRefresh() {
+
+    /**
+     * Refresh list
+     * <p>
+     * Updates list of notes
+     */
+    private void refresh() {
+
         if (recyclerView != null && adapter != null) {
-           // Clear the entire list
+
+            //Clear the entire list
             adapter.clearFromAdapter();
 
             try {
-                list = getDatabaseHelper().getNotesDao().queryForAll();
+                notes = getDatabaseHelper().getNotes().queryForAll();
             } catch (SQLException e) {
                 e.printStackTrace();
             }
 
-            adapter.addToAdapter(list); // Set up new elements
-            adapter.notifyDataSetChanged(); // Refresh data
-
+            // Set up new elements and refresh data
+            adapter.addToAdapter(notes);
+            adapter.notifyDataSetChanged();
         }
     }
 
-    //  implement OnQueryTextListener
+    /**
+     * Search query
+     * <p>
+     * Implement OnQueryTextListener
+     *
+     * @param searchView search view
+     */
     private void searchQuery(SearchView searchView) {
+
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                // Perform the final search, Triggered when the search is pressed
+                //Perform the final search, triggered when the search is pressed
                 return false;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                // Text has changed, Called when the user types each character in the text field
+                //Text has changed, called when the user types each character in the text field
                 adapter.getFilter().filter(newText);
                 return true;
             }
         });
     }
 
-
+    /**
+     * Show notification message
+     *
+     * @param message message
+     */
     private void showNotificationMessage(String message) {
-        boolean allowed = preferences.getBoolean(ALLOW_MSG, false);
 
-        if (allowed) {
+        boolean isAllowed = preferences.getBoolean(ALLOW_MESSAGE, false);
+
+        if (isAllowed) {
             Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
         }
     }
 
+    /**
+     * Get grid view
+     */
     private void getGridView() {
+
         recyclerView.setLayoutManager(layoutManager);
 
-        boolean grid = preferences.getBoolean(DISPLAY_GREED, false);
+        boolean hasGrid = preferences.getBoolean(DISPLAY_GREED, false);
 
-        // Create display layout with 2 columns
-        if (grid) {
+        if (hasGrid) {
+            //Create display layout with two columns
             recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
         }
-
     }
 
+    /**
+     * Get database helper
+     *
+     * @return database helper
+     */
     private DatabaseHelper getDatabaseHelper() {
+
         if (helper == null) {
-            helper = OpenHelperManager.getHelper(MainActivity.this,DatabaseHelper.class);
+            helper = OpenHelperManager.getHelper(MainActivity.this, DatabaseHelper.class);
         }
 
         return helper;
     }
 
-    // Release Database Helper when done
     @Override
     protected void onDestroy() {
         super.onDestroy();
 
+        //Release Database Helper when done
         if (helper != null) {
             OpenHelperManager.releaseHelper();
             helper = null;

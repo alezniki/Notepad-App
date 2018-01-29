@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <PreferenceCategory
-        android:title="@string/preferences_main_title"
-        android:key="prefs">
+        android:key="prefs"
+        android:title="@string/preferences_main_title">
 
         <!--Notification messages-->
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="allow_msg"
             android:summary="@string/preferences_notification_summary"
-            android:title="@string/preferences_notification_title"/>
+            android:title="@string/preferences_notification_title" />
 
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="display_grid"
             android:summary="@string/preferences_display_title"
-            android:title="@string/preferences_display_summary"/>
+            android:title="@string/preferences_display_summary" />
     </PreferenceCategory>
 </PreferenceScreen>

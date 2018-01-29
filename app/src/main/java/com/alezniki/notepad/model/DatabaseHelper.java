@@ -11,59 +11,82 @@ import com.j256.ormlite.table.TableUtils;
 import java.sql.SQLException;
 
 /**
- * Created by nikola on 6/25/17.
+ * Database helper
+ * <p>
+ * Created by nikola aleksic on 6/25/17.
  */
-
 @SuppressWarnings("ALL")
 public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 
-    // Database Info
+    /**
+     * Database name
+     */
     private static final String DATABASE_NAME = "notes.db";
+
+    /**
+     * Database version
+     */
     private static final int DATABASE_VERSION = 1;
 
-    private Dao<Notes,Integer> notesDao = null;
+    /**
+     * Note Dao
+     */
+    private Dao<Note, Integer> notes = null;
 
+    /**
+     * Constructor
+     *
+     * @param context context
+     */
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
     @Override
     public void onCreate(SQLiteDatabase database, ConnectionSource connectionSource) {
+
         try {
-            TableUtils.createTable(connectionSource, Notes.class);
+            TableUtils.createTable(connectionSource, Note.class);
         } catch (SQLException e) {
+            System.out.println("######## UNABLE TO CREATE DATABASE " + e);
             e.printStackTrace();
-            //Log.e(DatabaseHelper.class.getName(),"UNABLE TO CREATE DATABASE",e);
         }
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase database, ConnectionSource connectionSource, int oldVersion, int newVersion) {
+
         if (oldVersion != newVersion) {
             try {
-                TableUtils.dropTable(connectionSource, Notes.class, true);
+                TableUtils.dropTable(connectionSource, Note.class, true);
             } catch (SQLException e) {
                 e.printStackTrace();
-              //  Log.e(DatabaseHelper.class.getName(),
-              //          "UNABLE TO UPGRADE DATABASE FROM VERSION " + oldVersion + " TO NEW " + newVersion, e);
+                System.out.println("######## UNABLE TO UPGRADE DATABASE " + oldVersion + " " + newVersion + " " + e);
             }
         }
     }
 
-    // Insert, delete, read, update everything will be happened through DAOs
-    public Dao<Notes, Integer> getNotesDao() throws SQLException {
-        if (notesDao == null) {
-            notesDao = getDao(Notes.class);
+    /**
+     * Get notes
+     *
+     * @return notes
+     * @throws SQLException exception
+     */
+    public Dao<Note, Integer> getNotes() throws SQLException {
+
+        //Insert, delete, read, update everything will be happened through DAOs
+        if (notes == null) {
+            notes = getDao(Note.class);
         }
 
-        return notesDao;
+        return notes;
     }
 
-    // Clear resources and close database
     @Override
     public void close() {
         super.close();
 
-        notesDao = null;
+        //Clear resources and close database
+        notes = null;
     }
 }

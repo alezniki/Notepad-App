@@ -1,32 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context="com.alezniki.notepad.activities.DetailActivity">
 
-    <include layout="@layout/toolbar"/>
+    <include layout="@layout/toolbar" />
 
-    <!--Detail Note Title-->
+    <!--Detail note title-->
     <EditText
         android:id="@+id/et_detail_note_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/edit_title_detail"
+        android:padding="@dimen/padding_text"
         android:textAlignment="textStart"
-        android:textStyle="bold"
         android:textSize="@dimen/text_size_note_title"
-        android:padding="@dimen/padding_text" />
+        android:textStyle="bold" />
 
-    <!--Detail Note Text-->
+    <!--Detail note text-->
     <EditText
         android:id="@+id/et_detail_note_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/edit_note_detail"
+        android:padding="@dimen/padding_text"
         android:textAlignment="textStart"
-        android:textSize="@dimen/text_size_note_text"
-        android:padding="@dimen/padding_text"/>
-
+        android:textSize="@dimen/text_size_note_text" />
 </LinearLayout>
